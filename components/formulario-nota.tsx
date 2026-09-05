@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { guardarNota } from "@/lib/guardar-nota";
 
-type Estado = "vacio" | "guardando" | "guardado";
+type Estado = "vacio" | "guardando" | "guardado" | "error";
 
 export function FormularioNota() {
   const [texto, setTexto] = useState("");
@@ -15,11 +15,12 @@ export function FormularioNota() {
 
     try {
       await guardarNota(texto);
+      setEstado("guardado");
     } catch {
-      // TODO
+      setEstado("error");
+      return;
     }
 
-    setEstado("guardado");
   }
 
   return (
@@ -52,6 +53,12 @@ export function FormularioNota() {
         {estado === "guardado" && (
           <span role="status" className="text-sm text-emerald-700">
             Guardado
+          </span>
+        )}
+
+        {estado === "error" && (
+          <span role="alert" className="text-sm text-red-700">
+            Error al guardar la nota
           </span>
         )}
       </div>
